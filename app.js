@@ -44,7 +44,6 @@ app.post('/experiment-data', function(request, response) {
     MongoClient.connect(connectionString, function(err, db) {
 	if (err) {
             console.log('Error: ', err);
-	    console.log(data)
 	} else {
             console.log('Connected!');
 	    

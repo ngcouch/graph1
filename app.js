@@ -33,8 +33,32 @@ var server = app.listen(process.env.PORT, function(){
 
 app.post('/experiment-data', function(request, response) {
 
-    console.log(request.body)
-    response.end()
+    var username = process.env.DB_USER;
+    var password = process.env.DB_PASS;
+    var hosts = 'ds217125.mlab.com:17125';
+    var database = 'heroku_xx1ztvcl';
+    var connectionString = 'mongodb://' + username + ':' + password + '@' + hosts + '/' + database;
+
+    var data = request.body
+
+    MongoClient.connect(connectionString, function(err, db) {
+	if (err) {
+            console.log('Error: ', err);
+	    console.log(data)
+	} else {
+            console.log('Connected!');
+	    
+	    var collection = db.db(database).collection("data");
+	    collection.insertMany(data, function(err, res) {
+		
+		if (err) throw err;
+		console.log("Data inserted");
+		db.close();
+	    })
+	}
+    });
+    
+    response.end("")
   
    
 })

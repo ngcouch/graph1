@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+
+    <script type="text/javascript" src="jsPsych/jspsych.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-survey-multi-choice.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-survey-text.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-survey-text.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-categorize-html.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="jsPsych/plugins/jspsych-html-slider-response.js"></script>
+    <script type="text/javascript" src="experiment-data/functions.js"></script>
+    <script type="text/javascript" src="experiment-data/networks.js"></script>
+    <script type="text/javascript" src="experiment-data/distractors.js"></script>
+    <script type="text/javascript" src="experiment-data/conditions.js"></script>
+    <link href="jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"/>
+
+  </head>
+  <body>
+  </body>
+
+  <script>
+
+    var timeline = []
+
+
+    // Get participant info and use it to determoine the condition they are in
+    var ID = window.prompt("Enter your participant ID")
+
+    /*
+    while (!conditions.keys.includes(ID)) {
+
+	var ID = window.prompt("ID not found. Please check again, or contact the experimenter.")
+
+    }
+
+    */
+
+    // Get the condition they are in. 
+    var relation = conditions[ID]
+
+    var introduction = [{type: "html-keyboard-response",
+			 stimulus: "<p>Thank you for your time! Press any key to start the experiment.</p>",
+			 data: {type_:"instructions"}
+			},
+			{type: "html-keyboard-response",
+			 stimulus: "<p>Please do not refresh the page or press back during this experiment. If you do, you will lose your place in the experiment, and will have to start over.</p>",
+			 data: {type_: "instructions"}
+			}]
+        
+	if (relation == "causes") {
+
+	    var instructions = [{type: "html-keyboard-response",
+		    stimulus: "<p>In this experiment, you will be taught a set of sentences. Your method will be trial and error. For each sentence, you will indicate whether you think the sentence is TRUE or FALSE with a keypress. After you respond, you will be told whether you were correct or not.</p><p>If you think the sentence is TRUE, then press <big>F</big>. If you think that it is FALSE, then press <big>J</big>. If you don't know, make your best guess.</p> <p>Press space to continue.</p>",
+		     choices: [32],
+		     data: {type_: "instructions"}
+		    },
+		    {type: "html-keyboard-response",
+		     stimulus:"<p>These sentences all use the word <i>causes</i>. We mean this word in its normal, everyday sense, such as 'Smoking causes cancer' or 'Friction causes heat.' We will use letters to stand in for the things that cause and are caused.</p>",
+		     choices: [32],
+		     data: {type_: "instructions"}
+		    }]
+
+	}
+
+	else {
+
+	    var instructions = [{type: "html-keyboard-response",
+		    stimulus: "<p>In this experiment, you will be taught a set of sentences. Your method will be trial and error. For each sentence, you will indicate whether you think the sentence is TRUE or FALSE with a keypress. After you respond, you will be told whether you were correct or not.</p><p>If you think the sentence is TRUE, then press <big>F</big>. If you think that it is FALSE, then press <big>J</big></p>. If you don't know, make your best guess. <p>Press space to continue.</p>",
+		     choices: [32],
+		     data: {type_: "instructions"}
+		    },
+		    {type: "html-keyboard-response",
+		     stimulus:"<p>These sentences all use the word <i>dollops</i>. Though you don't know what this words means at the start of the experiment, you will learn it by learning when it is true and when it is false. </p>",
+		     choices: [32],
+		     data: {type_: "instructions"}
+		    }]
+
+	}
+    
+
+
+    console.log(instructions)
+    
+    timeline.push(introduction)
+    timeline.push(instructions)
+
+    // Setup order of the networks
+    networks = jsPsych.randomization.shuffle(networks)
+
+    // setup the cummulative correct trackers
+    var ccblock1 = []
+    var ccblock2 = []
+    
+    // Add condition and subject ID data
+    jsPsych.data.addProperties({subject: ID,
+    				condition: relation})
+
+
+    var block_length = networks[0].props.length
+
+    var network1_block = 0
+
+    var trial_network1= {type: "categorize-html",
+			 stimulus: function() {
+			  
+			     // Create network stim from trial variables
+			     
+			     X = jsPsych.timelineVariable('X', true)
+			     Y = jsPsych.timelineVariable('Y', true)
+			     
+			     return network_stim(X, Y, relation)
+			     
+			 },
+			 choices: [70, 74],
+			 data: {network: networks[0].name,
+				block:   0,
+				type_: "training"},
+			 key_answer: function() {
+			     
+			     valence = jsPsych.timelineVariable('valence', true)
+			     
+			     if (valence) return 70
+			     else return 74
+			     
+			 },
+			 correct_text: function() {
+			     
+			     valence = jsPsych.timelineVariable('valence', true)
+			     return "is " + valence.toString().toUpperCase() + ". You were CORRECT."
+
+			 },
+			 incorrect_text: function() {
+
+			     valence = jsPsych.timelineVariable('valence', true)
+			     return "is " + valence.toString().toUpperCase() + ". You were INCORRECT."
+
+			 },
+			 on_finish: function(data) {
+			     
+			     ccblock1.push(data.correct)
+			     
+			 }
+			}
+   
+
+    var network_training1 = {timeline: [trial_network1],
+			     timeline_variables: networks[0].props,
+			     on_finish: function() {network_block += 1},
+			     randomize_order: true,
+			     loop_function: function() {
+				 
+				 var last_block = ccblock1.slice(ccblock1.length-block_length, ccblock1.length)
+				 var sum = last_block.reduce((a, b) => a+b, false)
+				 
+				 if (sum < block_length) return true
+				 else return false 
+				 
+			     }
+			    };
+    
+    timeline.push(network_training1)
+
+    var testing_instructions = {type: "html-keyboard-response",
+				choices: [32],
+				stimulus: "<p> In this portion of the experiment, your memory for the sentences you just studied will be tested. If you believe the sentence is true, then press <big>F</big>. If you think it is false, then press <big>J</big>. If you do not know, make your best guess. Press spacebar to continue.</p>",
+				data: {type_: "instructions"}
+			       }
+
+    var testing_trial = {type: "html-keyboard-response",
+			 choices: [70, 74],
+			 stimulus: function() {
+
+			     X = jsPsych.timelineVariable('X', true)
+			     Y = jsPsych.timelineVariable('Y', true)
+			     
+			     return network_stim(X, Y, relation)
+
+			 },
+			 data: {answer: function() {
+			     
+			     jsPsych.timelineVariable('valence', true)
+			     
+			 }
+			       },
+			 
+			}
+			 
+    
+    var network_testing1 = {timeline: [testing_trial],
+			    timeline_variables: networks[0].props,
+			    randomize_order: true,
+			    repetitions: 2,
+			    data: {block: 1,
+				   type_: "test",
+				   network: networks[0].name}
+			   }
+
+
+    // Distractor questions
+    timeline.push(distractor_questions[0])
+
+    // Memory testing
+    timeline.push(testing_instructions)
+    timeline.push(network_testing1)
+
+    timeline.push(intermediate_trials)
+    timeline.push(instructions)
+
+    var network2_block = 0
+
+    var trial_network2= {type: "categorize-html",
+			 stimulus: function() {
+			     
+			     // Create network stim from trial variables
+			     
+			     X = jsPsych.timelineVariable('X', true)
+			     Y = jsPsych.timelineVariable('Y', true)
+			     
+			     return network_stim(X, Y, relation)
+			     
+			 },
+			 choices: [70, 74],
+			 data: {network: networks[1].name,
+				block:   network2_block,
+				type_: "training"},
+			 key_answer: function() {
+
+			     valence = jsPsych.timelineVariable('valence', true)
+
+			     if (valence) return 70
+			     else return 74
+
+			 },
+			 correct_text: function() {
+			     
+			     valence = jsPsych.timelineVariable('valence', true)
+			     return "is " + valence.toString().toUpperCase() + ". You were CORRECT."
+			     
+			 },
+			 incorrect_text: function() {
+			     
+			     valence = jsPsych.timelineVariable('valence', true)
+			     return "is " + valence.toString().toUpperCase() + ". You were INCORRECT."
+			     
+			 },
+			 on_finish: function(data) {
+			     
+			     ccblock2.push(data.correct)
+			     
+			 }
+			}
+
+
+    var network_training2 = {timeline: [trial_network2],
+			     timeline_variables: networks[1].props,
+			     randomize_order: true,
+			     on_finish: function() {network_block += 1},
+			     loop_function: function() {
+				 
+				 var last_block = ccblock2.slice(ccblock2.length-block_length, ccblock2.length)
+				 var sum = last_block.reduce((a, b) => a+b, false)
+				 
+				 if (sum < block_length) return true
+				 else return false 
+				 
+			     }
+			    };
+    
+    timeline.push(network_training2)
+    timeline.push(distractor_questions[1])
+    
+    // Memory testing
+    var network_testing2 = {timeline: [testing_trial],
+			    timeline_variables: networks[1].props,
+			    randomize_order: true,
+			    repetitions: 2,
+			    data: {block: 1,
+				   type_: "test",
+				   network: networks[1].name}
+			   }
+
+    timeline.push(testing_instructions)
+    timeline.push(network_testing2)
+
+    timeline = timeline.flat(5)
+
+    console.log(timeline)
+
+     jsPsych.init({
+	timeline: timeline,
+	on_finish: function() {
+	    $.ajax({
+		type: "POST",
+		url: "/experiment-data",
+		data: jsPsych.data.get().json(),
+		contentType: "application/json"
+	    })
+		.done(function() {
+		    alert("Thank you!")
+		})
+		.fail(function() {
+		    alert("A problem occurred while writing to the database. Please contact the researcher for more information.")
+		})
+	},
+	 experiment_width: 800
+    })
+
+  </script>
+</html>

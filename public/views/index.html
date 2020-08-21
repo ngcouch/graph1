@@ -31,7 +31,7 @@
 
     console.log(conditions)
     
-    while (!conditions.keys().includes(ID)) {
+    while (!Object.keys(conditions).includes(ID)) {
 
 	var ID = window.prompt("ID not found. Please check again, or contact the experimenter.")
 

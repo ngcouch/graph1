@@ -83,11 +83,6 @@
     // setup the cummulative correct trackers
     var ccblock1 = []
     var ccblock2 = []
-    
-    // Add condition and subject ID data
-    jsPsych.data.addProperties({PID: ID,
-    				condition: relation,
-				UID: jsPsych.randomization.randomID(8)})
 
 
     var block_length = networks[0].props.length
@@ -170,12 +165,24 @@
 			     return network_stim(X, Y, relation)
 
 			 },
-			 data: {answer: function() {
+			 data: {correct: function(data) {
 			     
-			     jsPsych.timelineVariable('valence', true)
+			     if (jsPsych.timelineVariable('valence', true)) {
+
+				 var ans = 70
+				 
+			     }
+
+			     else {
+
+				 var ans = 74
+				 
+			     }
+
+			     return (data.key_press == ans)
 			     
 			 }
-			       },
+			       }
 			 
 			}
 			 
@@ -276,6 +283,11 @@
     timeline.push(network_testing2)
 
     timeline = timeline.flat(5)
+        
+    // Add condition and subject ID data
+    jsPsych.data.addProperties({PID: ID,
+    				condition: relation,
+				UID: jsPsych.randomization.randomID(8)})
 
      jsPsych.init({
 	timeline: timeline,

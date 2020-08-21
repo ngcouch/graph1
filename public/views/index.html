@@ -288,7 +288,8 @@
 				UID: jsPsych.randomization.randomID(8)})
 
      jsPsych.init({
-	timeline: timeline,
+	 timeline: timeline,
+	 show_progress_bar: true,
 	on_finish: function() {
 	    $.ajax({
 		type: "POST",

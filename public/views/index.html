@@ -166,7 +166,7 @@
 			     return network_stim(X, Y, relation)
 
 			 },
-			 data: {correct: function(data) {
+			 on_finish: function(data) {
 			     
 			     if (jsPsych.timelineVariable('valence', true)) {
 
@@ -180,7 +180,7 @@
 				 
 			     }
 
-			     return (data.key_press == ans)
+			     data.correct = (data.key_press == ans)
 			     
 			 }
 			       }

@@ -48,35 +48,30 @@
 			{type: "html-keyboard-response",
 			 stimulus: "<p>Please do not refresh the page or press back during this experiment. If you do, you will lose your place in the experiment, and will have to start over.</p>",
 			 data: {type_: "instructions"}
-			}]
-        
-	if (relation == "causes") {
-
-	    var instructions = [{type: "html-keyboard-response",
+			},
+			{type: "html-keyboard-response",
 		    stimulus: "<p>In this experiment, you will be taught a set of sentences. Your method will be trial and error. For each sentence, you will indicate whether you think the sentence is TRUE or FALSE with a keypress. After you respond, you will be told whether you were correct or not.</p><p>If you think the sentence is TRUE, then press <big>F</big>. If you think that it is FALSE, then press <big>J</big>. If you don't know, make your best guess.</p> <p>Press space to continue.</p>",
 		     choices: [32],
 		     data: {type_: "instructions"}
-		    },
-		    {type: "html-keyboard-response",
+		    }]
+        
+	if (relation == "causes") {
+
+	    var instructions = {type: "html-keyboard-response",
 		     stimulus:"<p>These sentences all use the word <i>causes</i>. We mean this word in its normal, everyday sense, such as 'Smoking causes cancer' or 'Friction causes heat.' We will use letters to stand in for the things that cause and are caused.</p>",
 		     choices: [32],
 		     data: {type_: "instructions"}
-		    }]
+		    }
 
 	}
 
 	else {
 
-	    var instructions = [{type: "html-keyboard-response",
-		    stimulus: "<p>In this experiment, you will be taught a set of sentences. Your method will be trial and error. For each sentence, you will indicate whether you think the sentence is TRUE or FALSE with a keypress. After you respond, you will be told whether you were correct or not.</p><p>If you think the sentence is TRUE, then press <big>F</big>. If you think that it is FALSE, then press <big>J</big></p>. If you don't know, make your best guess. <p>Press space to continue.</p>",
-		     choices: [32],
-		     data: {type_: "instructions"}
-		    },
-		    {type: "html-keyboard-response",
+	    var instructions = {type: "html-keyboard-response",
 		     stimulus:"<p>These sentences all use the word <i>dollops</i>. Though you don't know what this words means at the start of the experiment, you will learn it by learning when it is true and when it is false. </p>",
 		     choices: [32],
 		     data: {type_: "instructions"}
-		    }]
+		    }
 
 	}
     

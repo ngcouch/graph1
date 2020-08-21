@@ -38,6 +38,7 @@ app.post('/experiment-data', function(request, response) {
     var hosts = 'ds217125.mlab.com:17125';
     var database = 'heroku_xx1ztvcl';
     var connectionString = 'mongodb://' + username + ':' + password + '@' + hosts + '/' + database;
+    console.log(connectionString)
 
     var data = request.body
 

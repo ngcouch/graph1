@@ -86,6 +86,28 @@
     var ccblock2 = []
 
 
+    // Setup the random labels
+
+     // Create random label assignments
+    var letters1 = jsPsych.randomization.shuffle(["A", "B", "C", "D", "E", "F"])
+    var letters2 = jsPsych.randomization.shuffle(["H", "I", "J", "K", "L", "M"])
+    var assign1  =  {"A": letters1[0],
+		     "B": letters1[1],
+		     "C": letters1[2],
+		     "D": letters1[3],
+		     "E": letters1[4],
+		     "F": letters1[5]}
+    var assign2  = {"A": letters2[0],
+		    "B": letters2[1],
+		    "C": letters2[2],
+		    "D": letters2[3],
+		    "E": letters2[4],
+		    "F": letters2[5]}
+    
+    var assignments = [assign1, assign2]
+    var letters     = [Object.keys(assign1).map(function(key) {return assign1[key]}),
+		       Object.keys(assign2).map(function(key) {return assign2[key]})]
+    
     var block_length = networks[0].props.length
 
     var network1_block = 0
@@ -98,7 +120,7 @@
 			     X = jsPsych.timelineVariable('X', true)
 			     Y = jsPsych.timelineVariable('Y', true)
 			     
-			     return network_stim(X, Y, relation)
+			     return network_stim(assign1[X], assign1[Y], relation)
 			     
 			 },
 			 choices: [70, 74],
@@ -116,13 +138,13 @@
 			 correct_text: function() {
 			     
 			     valence = jsPsych.timelineVariable('valence', true)
-			     return "is " + valence.toString().toUpperCase() + ". You were CORRECT."
+			     return "is " + valence.toString().toUpperCase() + ". You were <p style='color:blue;'>CORRECT</p>."
 
 			 },
 			 incorrect_text: function() {
 
 			     valence = jsPsych.timelineVariable('valence', true)
-			     return "is " + valence.toString().toUpperCase() + ". You were INCORRECT."
+			     return "is " + valence.toString().toUpperCase() + ". You were <p style='color:red;;'>INCORRECT</p>."
 
 			 },
 			 on_finish: function(data) {
@@ -163,7 +185,7 @@
 			     X = jsPsych.timelineVariable('X', true)
 			     Y = jsPsych.timelineVariable('Y', true)
 			     
-			     return network_stim(X, Y, relation)
+			     return network_stim(assign2[X], assign2[Y], relation)
 
 			 },
 			 on_finish: function(data) {

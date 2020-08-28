@@ -1,16 +1,3 @@
-
-var ME_network = {name: "ME",
-		  props: [{X: "Smoking", Y: "cancer", valence:true}]
-		 }
-
-var MC_network = {name: "MC",
-		  props: [{X: "Fire", Y: "smoke", valence:true}]
-		 }
-
-
-
-/* 
-
 var ME_network = {name: "ME",
 		  props: [{X:'F',Y:'D',valence:true},
 			  {X:'F',Y:'E',valence:true},
@@ -77,5 +64,4 @@ var MC_network = {name: "MC",
 			  {X:'C',Y:'D',valence:false}]
 		 }
 
-*/
 networks = [ME_network, MC_network]
